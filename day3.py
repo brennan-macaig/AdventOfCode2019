@@ -28,6 +28,6 @@ def solution():
                         visited[(x,y)] = step
             seens.append(visited)
         intersects = set(seens[0].keys()).intersection(set(seens[1].keys()))
-    return min(abs(x)+abs(y) for (x,y) in intersects) #, min(seens[0][k] + seens[1][k] for k in intersects)
+    return min(abs(x)+abs(y) for (x,y) in intersects) , min(seens[0][k] + seens[1][k] for k in intersects)
 
 print(solution())
