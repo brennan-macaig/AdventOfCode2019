@@ -90,7 +90,7 @@ def execute(intcode):
                 p1 = intcode[i+1]
             if p1m == 0:
                 p1 = intcode[intcode[i+1]]
-            text_in = 5#int(input(">: "))
+            text_in = int(input(">: "))
             intcode[intcode[i+1]] = text_in
             i = i + 2
         elif opcode == 4:
@@ -102,7 +102,7 @@ def execute(intcode):
             if p1m == 0:
                 p1 = intcode[intcode[i+1]]
             text_out = str(p1)
-            print(text_out + "\n")
+            print("sys.out: " + text_out + "\n")
             i = i + 2
         elif opcode == 5:
             if p1m == 1:
@@ -110,14 +110,24 @@ def execute(intcode):
             if p1m == 0:
                 p1 = intcode[intcode[i+1]]
             if p1 != 0:
-                i = intcode[intcode[i+2]]
+                if p2m == 1:
+                    i = intcode[i+2]
+                if p2m == 0:
+                    i = intcode[intcode[i+2]]
+            else:
+                i = i + 3
         elif opcode == 6:
             if p1m == 1:
                 p1 = intcode[i+1]
             if p1m == 0:
                 p1 = intcode[intcode[i+1]]
             if p1 == 0:
-                i = intcode[i+2]
+                if p2m == 1:
+                    i = intcode[i+2]
+                if p2m == 0:
+                    i = intcode[intcode[i+2]]
+            else:
+                i = i + 3
         elif opcode == 7:
             p1 = 0
             p2 = 0
@@ -151,10 +161,15 @@ def execute(intcode):
                 intcode[intcode[i+3]] = 0
             i = i + 4
         elif opcode == 99:
-            print("** SYS HALT **")
-            return intcode[0]
+            print("**sys halt**\n[diagnostics]")
+            print("mem[0]: " + str(intcode[0]))
+            return intcode
         else:
+            print("**sys crash**")
             print("error reading intcode")
+            print("[diagnostics]")
+            print("opcode: " + str(opcode))
+            print("mem index: " + str(i))
             return 0
 
 """
@@ -164,8 +179,3 @@ intcode, for use in other functions.
 def process(intcode_string):
     y = map(int, intcode_string.split(","))
     return list(y)
-
-with open("inputs/day5.txt", "r") as f:
-    for line in f:
-        l = process(line)
-        print(execute(l))
